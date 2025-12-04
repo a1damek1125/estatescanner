@@ -1,0 +1,956 @@
+=== FILE: components/AuctionCard.tsx ===
+import React from 'react';
+import { Heart, TrendingUp, MapPin, Calendar, DollarSign } from 'lucide-react';
+import { formatPrice, getScoreColor, getScoreDescription } from '@/lib/utils';
+
+interface AuctionCardProps {
+  auction: {
+    id: string;
+    title: string;
+    propertyType: string;
+    location: string;
+    currentBid: number;
+    estimatedValue: number;
+    auctionDate: string;
+    aiScore: number;
+    imageUrl: string;
+    isFavorite: boolean;
+  };
+  onFavoriteToggle: (id: string) => void;
+}
+
+const AuctionCard: React.FC<AuctionCardProps> = ({ auction, onFavoriteToggle }) => {
+  const scoreColor = getScoreColor(auction.aiScore);
+  const scoreDesc = getScoreDescription(auction.aiScore);
+  
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+      <div className="relative">
+        <img 
+          src={auction.imageUrl} 
+          alt={auction.title}
+          className="w-full h-48 object-cover"
+        />
+        <button
+          onClick={() => onFavoriteToggle(auction.id)}
+          className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
+            auction.isFavorite 
+              ? 'bg-red-500 text-white' 
+              : 'bg-white/80 text-gray-600 hover:bg-white'
+          }`}
+        >
+          <Heart size={20} fill={auction.isFavorite ? 'currentColor' : 'none'} />
+        </button>
+        <div className="absolute bottom-4 left-4">
+          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${scoreColor}`}>
+            AI Score: {auction.aiScore}/100 - {scoreDesc}
+          </span>
+        </div>
+      </div>
+      
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          {auction.title}
+        </h3>
+        
+        <div className="flex items-center text-gray-600 dark:text-gray-400 mb-3">
+          <MapPin size={16} className="mr-2" />
+          <span>{auction.location}</span>
+        </div>
+        
+        <div className="flex items-center text-gray-600 dark:text-gray-400 mb-4">
+          <Calendar size={16} className="mr-2" />
+          <span>Auction: {new Date(auction.auctionDate).toLocaleDateString()}</span>
+        </div>
+        
+        <div className="space-y-2 mb-4">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 dark:text-gray-400">Current Bid:</span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">
+              {formatPrice(auction.currentBid)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600 dark:text-gray-400">Est. Value:</span>
+            <span className="font-semibold text-green-600 dark:text-green-400">
+              {formatPrice(auction.estimatedValue)}
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center text-sm text-gray-500">
+            <TrendingUp size={16} className="mr-1" />
+            <span>{auction.propertyType}</span>
+          </div>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AuctionCard;=== FILE: components/StatCard.tsx ===
+import React from 'react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  change?: number;
+  icon: React.ReactNode;
+  color: 'blue' | 'green' | 'red' | 'purple' | 'yellow';
+}
+
+const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color }) => {
+  const getColorClasses = (color: string) => {
+    const colors = {
+      blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
+      green: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400',
+      red: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
+      purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+      yellow: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400'
+    };
+    return colors[color as keyof typeof colors] || colors.blue;
+  };
+
+  const getTrendIcon = (change: number) => {
+    if (change > 0) return <TrendingUp size={16} className="text-green-500" />;
+    if (change < 0) return <TrendingDown size={16} className="text-red-500" />;
+    return <Minus size={16} className="text-gray-500" />;
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            {title}
+          </p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {value}
+          </p>
+          {change !== undefined && (
+            <div className="flex items-center mt-2">
+              {getTrendIcon(change)}
+              <span className={`ml-2 text-sm font-medium ${
+                change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-600'
+              }`}>
+                {change > 0 ? '+' : ''}{change}%
+              </span>
+              <span className="ml-1 text-sm text-gray-500">vs last month</span>
+            </div>
+          )}
+        </div>
+        <div className={`p-3 rounded-lg ${getColorClasses(color)}`}>
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StatCard;=== FILE: lib/utils.ts ===
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(price);
+}
+
+export function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+export function getScoreColor(score: number): string {
+  if (score >= 80) return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+  if (score >= 60) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+  if (score >= 40) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
+  return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+}
+
+export function getScoreDescription(score: number): string {
+  if (score >= 80) return 'Excellent';
+  if (score >= 60) return 'Good';
+  if (score >= 40) return 'Fair';
+  return 'Poor';
+}
+
+export function calculateProfit(currentBid: number, estimatedValue: number): number {
+  return Math.round(((estimatedValue - currentBid) / estimatedValue) * 100);
+}
+
+export function generateMockAuctions() {
+  return [
+    {
+      id: '1',
+      title: 'Modern Apartment in Madrid Center',
+      propertyType: 'Apartment',
+      location: 'Madrid, Spain',
+      currentBid: 245000,
+      estimatedValue: 320000,
+      auctionDate: '2024-12-15',
+      aiScore: 85,
+      imageUrl: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
+      isFavorite: false
+    },
+    {
+      id: '2',
+      title: 'Beachfront Villa in Barcelona',
+      propertyType: 'Villa',
+      location: 'Barcelona, Spain',
+      currentBid: 450000,
+      estimatedValue: 680000,
+      auctionDate: '2024-12-18',
+      aiScore: 92,
+      imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
+      isFavorite: true
+    },
+    {
+      id: '3',
+      title: 'Commercial Building in Valencia',
+      propertyType: 'Commercial',
+      location: 'Valencia, Spain',
+      currentBid: 380000,
+      estimatedValue: 520000,
+      auctionDate: '2024-12-20',
+      aiScore: 78,
+      imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+      isFavorite: false
+    },
+    {
+      id: '4',
+      title: 'Historic House in Seville',
+      propertyType: 'House',
+      location: 'Seville, Spain',
+      currentBid: 180000,
+      estimatedValue: 250000,
+      auctionDate: '2024-12-22',
+      aiScore: 65,
+      imageUrl: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop',
+      isFavorite: false
+    },
+    {
+      id: '5',
+      title: 'Luxury Penthouse in Marbella',
+      propertyType: 'Penthouse',
+      location: 'Marbella, Spain',
+      currentBid: 520000,
+      estimatedValue: 750000,
+      auctionDate: '2024-12-25',
+      aiScore: 88,
+      imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+      isFavorite: true
+    },
+    {
+      id: '6',
+      title: 'Investment Property in Bilbao',
+      propertyType: 'Apartment',
+      location: 'Bilbao, Spain',
+      currentBid: 165000,
+      estimatedValue: 220000,
+      auctionDate: '2024-12-28',
+      aiScore: 72,
+      imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&h=300&fit=crop',
+      isFavorite: false
+    }
+  ];
+}
+
+export function generateMockAlerts() {
+  return [
+    {
+      id: '1',
+      name: 'Madrid Apartments Under 300k',
+      type: 'price_threshold',
+      criteria: {
+        location: 'Madrid',
+        propertyType: 'Apartment',
+        maxPrice: 300000
+      },
+      isActive: true,
+      createdAt: '2024-11-20'
+    },
+    {
+      id: '2',
+      name: 'High Score Properties',
+      type: 'ai_score',
+      criteria: {
+        minScore: 80
+      },
+      isActive: true,
+      createdAt: '2024-11-15'
+    },
+    {
+      id: '3',
+      name: 'Barcelona Villas',
+      type: 'location',
+      criteria: {
+        location: 'Barcelona',
+        propertyType: 'Villa'
+      },
+      isActive: false,
+      createdAt: '2024-11-10'
+    }
+  ];
+}
+
+export function generateMockFavorites() {
+  return [
+    {
+      id: '1',
+      auctionId: '2',
+      note: 'Great beachfront location with high potential',
+      tags: ['beachfront', 'investment', 'luxury'],
+      addedDate: '2024-12-01',
+      auction: {
+        title: 'Beachfront Villa in Barcelona',
+        location: 'Barcelona, Spain',
+        currentBid: 450000,
+        estimatedValue: 680000,
+        aiScore: 92
+      }
+    },
+    {
+      id: '2',
+      auctionId: '5',
+      note: 'Perfect for luxury rental investment',
+      tags: ['luxury', 'rental', 'penthouse'],
+      addedDate: '2024-12-02',
+      auction: {
+        title: 'Luxury Penthouse in Marbella',
+        location: 'Marbella, Spain',
+        currentBid: 520000,
+        estimatedValue: 750000,
+        aiScore: 88
+      }
+    }
+  ];
+}=== FILE: app/api/auctions/route.ts ===
+import { NextRequest, NextResponse } from 'next/server';
+import { generateMockAuctions } from '@/lib/utils';
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const query = searchParams.get('q');
+  const location = searchParams.get('location');
+  const propertyType = searchParams.get('type');
+  const minPrice = searchParams.get('minPrice');
+  const maxPrice = searchParams.get('maxPrice');
+  const minScore = searchParams.get('minScore');
+
+  let auctions = generateMockAuctions();
+
+  // Apply filters
+  if (query) {
+    auctions = auctions.filter(auction => 
+      auction.title.toLowerCase().includes(query.toLowerCase()) ||
+      auction.location.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  if (location) {
+    auctions = auctions.filter(auction => 
+      auction.location.toLowerCase().includes(location.toLowerCase())
+    );
+  }
+
+  if (propertyType) {
+    auctions = auctions.filter(auction => 
+      auction.propertyType === propertyType
+    );
+  }
+
+  if (minPrice) {
+    auctions = auctions.filter(auction => 
+      auction.currentBid >= parseInt(minPrice)
+    );
+  }
+
+  if (maxPrice) {
+    auctions = auctions.filter(auction => 
+      auction.currentBid <= parseInt(maxPrice)
+    );
+  }
+
+  if (minScore) {
+    auctions = auctions.filter(auction => 
+      auction.aiScore >= parseInt(minScore)
+    );
+  }
+
+  return NextResponse.json({ auctions });
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  
+  // In a real app, this would create a new auction in the database
+  const newAuction = {
+    id: Date.now().toString(),
+    ...body,
+    isFavorite: false
+  };
+
+  return NextResponse.json({ auction: newAuction }, { status: 201 });
+}=== FILE: app/api/alerts/route.ts ===
+import { NextRequest, NextResponse } from 'next/server';
+import { generateMockAlerts } from '@/lib/utils';
+
+export async function GET() {
+  const alerts = generateMockAlerts();
+  return NextResponse.json({ alerts });
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  
+  const newAlert = {
+    id: Date.now().toString(),
+    ...body,
+    createdAt: new Date().toISOString().split('T')[0],
+    isActive: true
+  };
+
+  return NextResponse.json({ alert: newAlert }, { status: 201 });
+}
+
+export async function PUT(request: NextRequest) {
+  const { id, ...updates } = await request.json();
+  
+  // In a real app, this would update the alert in the database
+  return NextResponse.json({ 
+    alert: { 
+      id, 
+      ...updates,
+      updatedAt: new Date().toISOString().split('T')[0]
+    } 
+  });
+}
+
+export async function DELETE(request: NextRequest) {
+  const { id } = await request.json();
+  
+  // In a real app, this would delete the alert from the database
+  return NextResponse.json({ success: true }, { status: 200 });
+}=== FILE: app/api/favorites/route.ts ===
+import { NextRequest, NextResponse } from 'next/server';
+import { generateMockFavorites } from '@/lib/utils';
+
+export async function GET() {
+  const favorites = generateMockFavorites();
+  return NextResponse.json({ favorites });
+}
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  
+  const newFavorite = {
+    id: Date.now().toString(),
+    ...body,
+    addedDate: new Date().toISOString().split('T')[0]
+  };
+
+  return NextResponse.json({ favorite: newFavorite }, { status: 201 });
+}
+
+export async function DELETE(request: NextRequest) {
+  const { id } = await request.json();
+  
+  // In a real app, this would remove the favorite from the database
+  return NextResponse.json({ success: true }, { status: 200 });
+}=== FILE: .gitignore ===
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?=== FILE: README.md ===
+# EstateScanner - Real Estate Auction Platform
+
+A comprehensive Next.js application for aggregating and analyzing real estate auctions in Spain with AI-powered scoring and investment insights.
+
+## Features
+
+### 🏠 Core Functionality
+- **Auction Aggregation**: Comprehensive listing of real estate auctions across Spain
+- **AI-Powered Scoring**: Intelligent A-D scoring system for investment potential
+- **Advanced Filtering**: Search by location, property type, price range, and AI score
+- **Real-time Analytics**: Market trends and investment opportunity analysis
+
+### 🔐 Authentication System
+- Secure user registration and login
+- Password reset functionality
+- User profile management
+- Demo credentials available for testing
+
+### 📊 Dashboard & Analytics
+- Comprehensive statistics overview
+- Recent auctions preview
+- Market trend indicators
+- Profit potential calculations
+
+### 🔔 Smart Alerts System
+- Create custom alerts for specific criteria
+- Price threshold notifications
+- Location-based alerts
+- AI score-based notifications
+
+### ❤️ Favorites Management
+- Save interesting properties
+- Add personal notes and tags
+- Organize favorites by categories
+- Quick access to saved auctions
+
+### ⚙️ Settings & Configuration
+- User profile management
+- Billing and subscription settings
+- Notification preferences
+- Account security options
+
+### 💰 Pricing Plans
+- Multiple subscription tiers
+- Feature comparison
+- Free trial options
+- Transparent pricing structure
+
+## Technology Stack
+
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **Icons**: Lucide React
+- **Database**: Ready for integration (MongoDB/PostgreSQL)
+- **Authentication**: JWT-based (ready for implementation)
+- **API**: RESTful API routes
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/estate-scanner.git
+cd estate-scanner
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+
+4. Run the development server:
+```bash
+npm run dev
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Demo Credentials
+
+For testing purposes, you can use these demo credentials:
+- **Email**: demo@estatescanner.com
+- **Password**: demo123
+
+## Project Structure
+
+```
+estate-scanner/
+├── app/
+│   ├── api/
+│   │   ├── auctions/
+│   │   ├── alerts/
+│   │   └── favorites/
+│   ├── auth/
+│   │   ├── login/
+│   │   ├── register/
+│   │   └── reset-password/
+│   ├── app/
+│   │   ├── dashboard/
+│   │   ├── auctions/
+│   │   ├── alerts/
+│   │   └── favorites/
+│   ├── legal/
+│   │   ├── terms/
+│   │   └── privacy/
+│   ├── pricing/
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── Sidebar.tsx
+│   ├── AuctionCard.tsx
+│   └── StatCard.tsx
+├── lib/
+│   └── utils.ts
+├── public/
+├── package.json
+├── tsconfig.json
+├── tailwind.config.js
+├── next.config.js
+└── README.md
+```
+
+## API Endpoints
+
+### Auctions
+- `GET /api/auctions` - Get all auctions with filtering
+- `POST /api/auctions` - Create new auction
+
+### Alerts
+- `GET /api/alerts` - Get user alerts
+- `POST /api/alerts` - Create new alert
+- `PUT /api/alerts` - Update alert
+- `DELETE /api/alerts` - Delete alert
+
+### Favorites
+- `GET /api/favorites` - Get user favorites
+- `POST /api/favorites` - Add to favorites
+- `DELETE /api/favorites` - Remove from favorites
+
+## AI Scoring System
+
+The AI scoring system evaluates properties based on:
+- **Location Analysis**: Neighborhood quality, amenities, transport
+- **Market Trends**: Price history and growth potential
+- **Property Condition**: Age, maintenance, and renovation needs
+- **Investment Potential**: Rental yield and appreciation prospects
+- **Risk Assessment**: Legal issues, market volatility
+
+Score ranges:
+- **90-100**: Excellent investment opportunity
+- **80-89**: Very good investment potential
+- **70-79**: Good investment with moderate risk
+- **60-69**: Fair investment, higher risk
+- **Below 60**: Poor investment, high risk
+
+## Deployment
+
+The application is ready for deployment on:
+- **Vercel**: One-click deployment with GitHub integration
+- **Netlify**: Static site generation support
+- **AWS**: Containerized deployment options
+- **DigitalOcean**: VPS deployment
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support, email support@estatescanner.com or join our Slack channel.
+
+## Roadmap
+
+- [ ] Mobile app development
+- [ ] Advanced AI analytics
+- [ ] Integration with property databases
+- [ ] Real-time auction notifications
+- [ ] Investment portfolio tracking
+- [ ] Market prediction algorithms
+- [ ] Multi-language support
+- [ ] API for third-party integrations
+
+---
+
+Built with ❤️ for real estate investors in Spain.=== FILE: public/next.svg ===
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80">
+  <path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 1.4l-19.3 51.7-19.4-51.7h-15.1l25.6 66.6h15.1l25.6-66.6h-15z"/>
+  <path fill="#000" d="M301.6 77.8l-19.3-51.7-19.4 51.7h-15.1l25.6-66.6h15.1l25.6 66.6h-15z"/>
+</svg>=== FILE: public/vercel.svg ===
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 283 64">
+  <path fill="black" d="M141 16c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm0 37c-9.4 0-17-7.6-17-17s7.6-17 17-17 17 7.6 17 17-7.6 17-17 17z"/>
+  <path fill="black" d="M250.7 14.1c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm0 37c-9.4 0-17-7.6-17-17s7.6-17 17-17 17 7.6 17 17-7.6 17-17 17z"/>
+  <path fill="black" d="M141 0C63 0 0 63 0 141s63 141 141 141 141-63 141-141S219 0 141 0zm0 248c-59.1 0-107-47.9-107-107S81.9 34 141 34s107 47.9 107 107-47.9 107-107 107z"/>
+</svg>=== FILE: .env.example ===
+# Database
+DATABASE_URL="your-database-url-here"
+
+# Authentication
+NEXTAUTH_SECRET="your-nextauth-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Email Service (for password reset)
+SMTP_HOST="your-smtp-host"
+SMTP_PORT=587
+SMTP_USER="your-smtp-user"
+SMTP_PASS="your-smtp-password"
+FROM_EMAIL="noreply@estatescanner.com"
+
+# API Keys
+REAL_ESTATE_API_KEY="your-real-estate-api-key"
+AI_ANALYSIS_API_KEY="your-ai-analysis-api-key"
+
+# Payment Processing
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
+
+# File Storage (for property images)
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+CLOUDINARY_API_KEY="your-cloudinary-api-key"
+CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
+
+# Analytics
+GOOGLE_ANALYTICS_ID="your-google-analytics-id"
+MIXPANEL_TOKEN="your-mixpanel-token"
+
+# Development
+NODE_ENV="development"
+PORT=3000=== FILE: app/globals.css ===
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Gradient animations */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Glass morphism */
+.glass {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

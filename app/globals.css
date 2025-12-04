@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-slate-950 text-slate-50;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent;
+  }
+  
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-lg;
+  }
+  
+  .btn-primary {
+    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .input {
+    @apply bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500;
+  }
+}

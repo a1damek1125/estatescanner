@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja - EstateScanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0c0e12; color: #f8fafc; }
+        .input { background-color: #374151; border: 1px solid #4b5563; border-radius: 0.5rem; padding: 0.75rem; color: #f8fafc; }
+        .input:focus { outline: none; border-color: #10b981; }
+        .btn-primary { background-color: #10b981; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; display: inline-block; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #059669; }
+        .btn-secondary { background-color: #374151; color: #d1d5db; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; display: inline-block; transition: background-color 0.3s; }
+        .btn-secondary:hover { background-color: #4b5563; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center py-12">
+    <div class="max-w-md w-full space-y-8">
+        <div class="text-center">
+            <div class="bg-emerald-500 w-12 h-12 rounded-lg mx-auto mb-4"></div>
+            <h2 class="text-3xl font-bold">Dołącz do EstateScanner</h2>
+            <p class="text-slate-400 mt-2">Zacznij swoją przygodę z licytacjami</p>
+        </div>
+        
+        <form class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-slate-300 mb-2">
+                        Imię
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        class="input w-full"
+                        placeholder="Twoje imię"
+                    />
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-300 mb-2">
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        class="input w-full"
+                        placeholder="twój@email.com"
+                    />
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-300 mb-2">
+                        Hasło
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        class="input w-full"
+                        placeholder="••••••••"
+                    />
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="block text-sm font-medium text-slate-300 mb-2">
+                        Potwierdź hasło
+                    </label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        required
+                        class="input w-full"
+                        placeholder="••••••••"
+                    />
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <input
+                        id="acceptTerms"
+                        name="acceptTerms"
+                        type="checkbox"
+                        required
+                        class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-600 rounded mt-1"
+                    />
+                    <label for="acceptTerms" class="ml-2 block text-sm text-slate-400">
+                        Akceptuję
+                        <a href="../legal/terms.html" class="text-emerald-400 hover:text-emerald-300">regulamin</a>
+                        i
+                        <a href="../legal/privacy.html" class="text-emerald-400 hover:text-emerald-300">politykę prywatności</a>
+                    </label>
+                </div>
+
+                <div class="flex items-start">
+                    <input
+                        id="joinBeta"
+                        name="joinBeta"
+                        type="checkbox"
+                        class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-600 rounded mt-1"
+                    />
+                    <label for="joinBeta" class="ml-2 block text-sm text-slate-400">
+                        Chcę dołączyć do beta PRO (darmowy okres 30 dni)
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn-primary w-full">
+                    Zarejestruj się
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <p class="text-slate-400">
+                Masz już konto?{' '}
+                <a href="login.html" class="text-emerald-400 hover:text-emerald-300">
+                    Zaloguj się
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                acceptTerms: document.getElementById('acceptTerms').checked,
+                joinBeta: document.getElementById('joinBeta').checked
+            };
+            
+            console.log('Register:', formData);
+            
+            // Simulate registration and redirect
+            setTimeout(() => {
+                window.location.href = '../app/onboarding.html';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

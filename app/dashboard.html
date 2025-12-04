@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EstateScanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0c0e12; color: #f8fafc; }
+        .card { background-color: #1a1d23; border: 1px solid #374151; border-radius: 0.5rem; }
+        .btn-primary { background-color: #10b981; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; display: inline-block; transition: background-color 0.3s; }
+        .btn-primary:hover { background-color: #059669; }
+        .btn-secondary { background-color: #374151; color: #d1d5db; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; display: inline-block; transition: background-color 0.3s; }
+        .btn-secondary:hover { background-color: #4b5563; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-slate-950 flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-slate-900 border-r border-slate-800">
+            <div class="flex items-center h-16 px-6 border-b border-slate-800">
+                <div class="bg-emerald-500 w-8 h-8 rounded-lg mr-3"></div>
+                <span class="text-xl font-bold">EstateScanner</span>
+            </div>
+            
+            <nav class="mt-6 px-6">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="dashboard.html" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500/10 text-emerald-400">
+                            <i class="fas fa-home w-5 h-5 mr-3"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="auctions.html" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-300 hover:bg-slate-800">
+                            <i class="fas fa-building w-5 h-5 mr-3"></i>
+                            Aukcje
+                        </a>
+                    </li>
+                    <li>
+                        <a href="alerts.html" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-300 hover:bg-slate-800">
+                            <i class="fas fa-bell w-5 h-5 mr-3"></i>
+                            Alerty
+                        </a>
+                    </li>
+                    <li>
+                        <a href="favorites.html" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-300 hover:bg-slate-800">
+                            <i class="fas fa-star w-5 h-5 mr-3"></i>
+                            Ulubione
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings/profile.html" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-300 hover:bg-slate-800">
+                            <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                            Ustawienia
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col">
+            <!-- Top bar -->
+            <div class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold">Dashboard</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm">
+                        Plan: Pro
+                    </div>
+                    <div class="w-8 h-8 bg-slate-700 rounded-full"></div>
+                </div>
+            </div>
+            
+            <!-- Page content -->
+            <main class="flex-1 p-6">
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold mb-2">Dzień dobry, Adam!</h1>
+                    <p class="text-slate-400">Plan Pro • Wygasa: 15.01.2025</p>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <a href="alerts.html" class="card p-6 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Aktywne alerty</p>
+                                <p class="text-2xl font-bold mt-1">12</p>
+                            </div>
+                            <div class="bg-emerald-500/10 p-3 rounded-lg">
+                                <i class="fas fa-bell text-2xl text-emerald-400"></i>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <a href="auctions.html" class="card p-6 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Nowe aukcje (24h)</p>
+                                <p class="text-2xl font-bold mt-1">247</p>
+                            </div>
+                            <div class="bg-blue-500/10 p-3 rounded-lg">
+                                <i class="fas fa-building text-2xl text-blue-400"></i>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <a href="favorites.html" class="card p-6 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Ulubione oferty</p>
+                                <p class="text-2xl font-bold mt-1">8</p>
+                            </div>
+                            <div class="bg-yellow-500/10 p-3 rounded-lg">
+                                <i class="fas fa-star text-2xl text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    <a href="auctions.html" class="card p-6 hover:border-slate-700 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">A+ oferty</p>
+                                <p class="text-2xl font-bold mt-1">3</p>
+                            </div>
+                            <div class="bg-emerald-500/10 p-3 rounded-lg">
+                                <i class="fas fa-chart-line text-2xl text-emerald-400"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Live radar -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card p-6">
+                        <h2 class="text-xl font-semibold mb-4">🔴 Live radar</h2>
+                        <p class="text-slate-400 text-sm mb-6">3 ostatnie aukcje z wysokim scoringiem</p>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-slate-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium">Mieszkanie 3-pokojowe, Barcelona</h3>
+                                        <p class="text-sm text-slate-400">Sareb • 15.12.2024</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold text-emerald-400">€145,000</p>
+                                        <span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs">A+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium">Dom jednorodzinny, Valencia</h3>
+                                        <p class="text-sm text-slate-400">Haya • 18.12.2024</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold text-emerald-400">€89,000</p>
+                                        <span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">B</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium">Finca rústica, Alicante</h3>
+                                        <p class="text-sm text-slate-400">BOE • 20.12.2024</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold text-emerald-400">€245,000</p>
+                                        <span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs">A</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="auctions.html" class="btn-primary w-full mt-6 block text-center">
+                            Zobacz wszystkie aukcje
+                        </a>
+                    </div>
+
+                    <!-- Quick actions -->
+                    <div class="card p-6">
+                        <h2 class="text-xl font-semibold mb-4">Szybkie akcje</h2>
+                        
+                        <div class="space-y-4">
+                            <a href="auctions.html" class="block">
+                                <div class="bg-slate-800 rounded-lg p-4 hover:bg-slate-700 transition-colors">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-building text-2xl text-emerald-400 mr-3"></i>
+                                        <div>
+                                            <h3 class="font-medium">Przeglądaj aukcje</h3>
+                                            <p class="text-sm text-slate-400">247 nowych ofert</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <a href="alerts.html" class="block">
+                                <div class="bg-slate-800 rounded-lg p-4 hover:bg-slate-700 transition-colors">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-bell text-2xl text-blue-400 mr-3"></i>
+                                        <div>
+                                            <h3 class="font-medium">Zarządzaj alertami</h3>
+                                            <p class="text-sm text-slate-400">12 aktywnych alertów</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <a href="favorites.html" class="block">
+                                <div class="bg-slate-800 rounded-lg p-4 hover:bg-slate-700 transition-colors">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-2xl text-yellow-400 mr-3"></i>
+                                        <div>
+                                            <h3 class="font-medium">Ulubione oferty</h3>
+                                            <p class="text-sm text-slate-400">8 zapisanych nieruchomości</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
