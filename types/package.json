@@ -1,9 +1,10 @@
 {
-  "name": "@typescript-eslint/scope-manager",
+  "name": "@typescript-eslint/types",
   "version": "6.21.0",
-  "description": "TypeScript scope analyser for ESLint",
+  "description": "Types for the TypeScript-ESTree AST spec",
   "files": [
     "dist",
+    "_ts4.3",
     "package.json",
     "README.md",
     "LICENSE"
@@ -22,7 +23,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/typescript-eslint/typescript-eslint.git",
-    "directory": "packages/scope-manager"
+    "directory": "packages/types"
   },
   "bugs": {
     "url": "https://github.com/typescript-eslint/typescript-eslint/issues"
@@ -34,27 +35,40 @@
     "estree"
   ],
   "scripts": {
-    "build": "npx nx build",
-    "clean": "npx nx clean",
-    "clean-fixtures": "npx nx clean-fixtures",
+    "copy-ast-spec": "tsx ./tools/copy-ast-spec.ts",
+    "build": "tsc -b tsconfig.build.json",
+    "postbuild": "downlevel-dts dist _ts4.3/dist --to=4.3",
+    "clean": "tsc -b tsconfig.build.json --clean",
+    "postclean": "rimraf dist && rimraf src/generated && rimraf _ts3.4 && rimraf _ts4.3 && rimraf coverage",
     "format": "prettier --write \"./**/*.{ts,mts,cts,tsx,js,mjs,cjs,jsx,json,md,css}\" --ignore-path ../../.prettierignore",
-    "generate-lib": "npx nx generate-lib",
+    "generate-lib": "npx nx run scope-manager:generate-lib",
     "lint": "npx nx lint",
-    "test": "npx nx test --code-coverage",
-    "typecheck": "npx nx typecheck"
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "dependencies": {
-    "@typescript-eslint/types": "6.21.0",
-    "@typescript-eslint/visitor-keys": "6.21.0"
+  "nx": {
+    "targets": {
+      "copy-ast-spec": {
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "{projectRoot}/src/generated"
+        ],
+        "cache": true
+      },
+      "build": {
+        "dependsOn": [
+          "^build",
+          "copy-ast-spec"
+        ]
+      }
+    }
   },
   "devDependencies": {
-    "@prettier/sync": "*",
-    "@types/glob": "*",
-    "@typescript-eslint/typescript-estree": "6.21.0",
-    "glob": "*",
-    "jest-specific-snapshot": "*",
-    "make-dir": "*",
-    "pretty-format": "*",
+    "downlevel-dts": "*",
+    "prettier": "^3.0.3",
+    "rimraf": "*",
+    "tsx": "*",
     "typescript": "*"
   },
   "funding": {
